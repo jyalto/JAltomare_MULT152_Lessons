@@ -11,12 +11,23 @@ public class PlayerController : MonoBehaviour
     public bool gameOver = false;
 
     private Animator animPlayer;
+    public ParticleSystem expSystem;
+    public ParticleSystem dirtSystem;
+
+    public AudioClip jumpSound;
+    public AudioClip crashSound;
+
+    private AudioSource asPLayer;
 
     void Start()
     {
         rbPlayer = GetComponent<Rigidbody>(); //access and store the rigidbody
-        animPlayer = GetComponent<Animator>(); //access and store the player animator
+
         Physics.gravity *= gravityModifier;
+
+        animPlayer = GetComponent<Animator>(); //access and store the player animator
+
+        asPLayer = GetComponent<AudioSource>();
 
     }
 
@@ -27,9 +38,13 @@ public class PlayerController : MonoBehaviour
         // Conditions met to Jump
         if (spaceDown && onGround && !gameOver) 
         {
+            // Jump Code
             rbPlayer.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             onGround = false;
             animPlayer.SetTrigger("Jump_trig");
+            dirtSystem.Stop();
+            asPLayer.PlayOneShot(jumpSound, 2.0f); 
+            // if we used just .Play() it would play the clip associated with the audio source
         }
     }
     // resetting the value of on ground to true when the player reaches the ground
@@ -38,15 +53,19 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         { 
-            onGround = true; 
+            onGround = true;
+            dirtSystem.Play();
         }
-        // Game if over when this condition is met
+        // Game is over when this condition is met
         else if (collision.gameObject.CompareTag("Obstacle")) 
         {
             Debug.Log("Game Over!");
             gameOver = true;
             animPlayer.SetBool("Death_b", true);
             animPlayer.SetInteger("DeathType_int", 2);
+            expSystem.Play();
+            dirtSystem.Stop();
+            asPLayer.PlayOneShot(crashSound, 2.0f);
         }
     }
 }
