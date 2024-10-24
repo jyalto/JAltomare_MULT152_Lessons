@@ -4,31 +4,34 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody rbPlayer; // class level variable to hold the rigidbody
+    // variables for player components
+    private Rigidbody rbPlayer;
+    private Animator animPlayer;
+    private AudioSource asPLayer;
+
+    // Other Variables
     public float gravityModifier;
     public float jumpForce;
     private bool onGround = true;
     public bool gameOver = false;
 
-    private Animator animPlayer;
+    // Particle Systems
     public ParticleSystem expSystem;
     public ParticleSystem dirtSystem;
 
+    // Audio Clips
     public AudioClip jumpSound;
     public AudioClip crashSound;
 
-    private AudioSource asPLayer;
-
     void Start()
     {
-        rbPlayer = GetComponent<Rigidbody>(); //access and store the rigidbody
-
-        Physics.gravity *= gravityModifier;
-
-        animPlayer = GetComponent<Animator>(); //access and store the player animator
-
+        // Accessing and storing component references
+        rbPlayer = GetComponent<Rigidbody>(); 
+        animPlayer = GetComponent<Animator>(); 
         asPLayer = GetComponent<AudioSource>();
 
+        // When this is called, it motifies the gravity value for the entire project
+        Physics.gravity *= gravityModifier;
     }
 
     // Update is called once per frame
