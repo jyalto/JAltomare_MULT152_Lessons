@@ -46,14 +46,21 @@ public class Target : MonoBehaviour
 
     private void OnMouseDown()
     {
-        gameManager.UpdateScore(pointValue);
-        Instantiate(expParticle, transform.position, expParticle.transform.rotation);
-        Destroy(gameObject);
+        if(gameManager.gameActive) 
+        {
+            gameManager.UpdateScore(pointValue);
+            Instantiate(expParticle, transform.position, expParticle.transform.rotation);
+            Destroy(gameObject);
+        }
     }
 
     // This makes the sensor destroy targets that collide with it
     private void OnTriggerEnter(Collider other)
     {
         Destroy(gameObject);
+        if(!gameObject.CompareTag("Hazard")) // If a food item falls, the game is over
+        {
+            gameManager.GameOver();
+        }
     }
 }
